@@ -10,6 +10,7 @@ from collections import Counter
 from PIL import Image, ImageDraw, ImageFont
 import emoji
 
+
 def seperate_message(s, names):
     ignores = ['Dec', 'Nov', 'Oct' , 
                'Sep ','Aug ', 'Jul ', 
@@ -22,7 +23,7 @@ def seperate_message(s, names):
             s =  s[:i]
     return s
 
-def extract_html_to_txt(read_file, record_chat):
+def extract_html_to_txt(read_file, record_chat, output_dir):
     print("Extracting html into txt .....")
     with open(read_file) as fp:
         soup = BeautifulSoup(fp, 'lxml')
@@ -40,7 +41,7 @@ def extract_html_to_txt(read_file, record_chat):
         person_cleaned= []
         for t in person[1:]: # ignore first
             person_cleaned.append(seperate_message(t, names)) 
-        filename = '{}_chat.txt'.format('_'.join(names[i].split()))
+        filename = '{}/{}_chat.txt'.format(output_dir, '_'.join(names[i].split()))
         if(record_chat):
             with open(filename, 'w') as fp:
                 for text in person_cleaned:
@@ -86,13 +87,19 @@ def extract_phrases(text,length):
     for sent in text.split('\n'):
         words = sent.split()
         for phrase in ngrams(words, length):
-            if not np.array([ s in phrase for s in ['’',':',' ',',','click','.'] ]).any():
+            if not np.array([ s in phrase for s in ['’',':',' ',',','click','.','a'] ]).any():
                 phrase_counter[phrase] += 1
     return phrase_counter
  
-def main(message_file, record_chat):
+def main(message_file, record_chat, output_dir):
     # parse messages from FB chat
-    texts, names = extract_html_to_txt(message_file, record_chat)
+
+    try:
+        os.stat(output_dir)
+    except:
+        os.mkdir(output_dir)   
+
+    texts, names = extract_html_to_txt(message_file, record_chat, output_dir)
 
     font = ImageFont.truetype("Symbola.ttf", 20)
     for i in range(len(names)):
@@ -139,7 +146,7 @@ def main(message_file, record_chat):
                 font=font,fill=(0,0,0))
 
         # save image
-        filename = '{}_wordcloud.png'.format('_'.join(names[i].split()))
+        filename = '{}/{}_wordcloud.png'.format(output_dir,'_'.join(names[i].split()))
         image.save(filename, format='png', optimize=True)
         print('{} generated \n'.format(filename))
 
@@ -147,18 +154,17 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Parse your chat history with someone (message.html)  to generate word cloud image in the shape of a heart.')
    
-    parser.add_argument('-f','--message_file', dest='message_file',
-                        help='path to message.html file. Default is this directory.')
+    parser.add_argument('-f','--message_file', dest='message_file', default='message.html',
+                        help='path to message.html file. Default is current directory.')
     parser.add_argument('-r','--record', dest='record_chat', action='store_true',
                         help='If set, will write a chat file for each person in the chat.')
-    
+    parser.add_argument('-o', '--output_dir', dest='output_dir', default='out',
+                        help='Directory to store the output files.')
+
+
     args = parser.parse_args()
-    message_file = 'message.html'
-    if args.message_file != None:
-        message_file = args.message_file
-    if not os.path.exists(message_file) or not '.html' in message_file:
-        print('No valid message file. Please put a message.html in this directory.')
-    record_chat = args.record_chat 
-    main(message_file, record_chat)
+
+
+    main(args.message_file, args.record_chat, args.output_dir)
 
    

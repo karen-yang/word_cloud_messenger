@@ -112,3 +112,6 @@ venv.bak/
 # private worldcloud png
 *_wordcloud.png
 
+# outputs
+out/
+

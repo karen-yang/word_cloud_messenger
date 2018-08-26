@@ -6,7 +6,9 @@ Parse your chat history with someone (message.html)  to generate word cloud imag
 * [Your Facebook Information](https://www.facebook.com/dyi/?x=AdkfBxkFViVpae-m&referrer=yfi_settings) - Go to your Facebook Information Page
 
 
-* Deselect all, Select "Messages", Click "Create File". It will download your entire chat history on Messenger, including text. images, hyperlinks. We will only use text data. 
+* Deselect all. Select "Messages". Select Format to be HTML. Select your ideal Data Range. 
+
+* Click "Create File". It will download your entire chat history on Messenger, including text. images, hyperlinks. We will only use text data. 
 
 * Wait for 5-15 minutes until it completes downloading and sends you a notification. 
 * After downloading the file, unzip and navigate into the directory (facebook-[username])
