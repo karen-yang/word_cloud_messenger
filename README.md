@@ -31,4 +31,8 @@ $ pip3 install -r requirements.txt
 ```sh
 $ python3 main.py -f [path\to\your\chat\file] 
 ```
-Alternatively you can copy the message.html inside local folder without specifying -f
+The images will show up in out/ folder.
+
+- Alternatively, you can copy the message.html inside local folder without specifying -f.
+- You can add -r to record the chats in a txt files.
+- You can add -o to specify the output folder.
